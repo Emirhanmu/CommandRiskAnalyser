@@ -14,13 +14,23 @@ namespace CommandRiskAnalyser
 
             Analyser analyser = new Analyser(rules);
 
-            CommandInput input = new CommandInput(Console.ReadLine());
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Usage: safe {command}");
+            }
+            else 
+            {
+                string command = string.Join(" ", args);
 
-            AnalysisResult result = new AnalysisResult();
+                CommandInput input = new CommandInput(command);
 
-            result = analyser.Analyse(input);
+                AnalysisResult result = new AnalysisResult();
 
-            Console.WriteLine("User Input: " + result.CommandInput + " \nMatched Command: " + result.Command + " \nRisk Level: " + result.RiskLevel + " \nDescription: " + result.Description + " \nDate and Time: " + result.Date);
+                result = analyser.Analyse(input);
+
+                Console.WriteLine("User Input: " + result.CommandInput + " \nMatched Command: " + result.Command + " \nRisk Level: " + result.RiskLevel + " \nDescription: " + result.Description + " \nDate and Time: " + result.Date);
+            }
+
             Console.ReadKey();
         }
     }

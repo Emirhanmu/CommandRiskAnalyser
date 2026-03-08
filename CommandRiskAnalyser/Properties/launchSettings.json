@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommandRiskAnalyser": {
+      "commandName": "Project",
+      "commandLineArgs": "rm -rf"
+    }
+  }
+}
