@@ -1,73 +1,50 @@
 #!/bin/bash
 
+set -e
+
 echo "-------------------------------------"
 echo " Safe Command Analyzer Installer"
 echo "-------------------------------------"
 
-# Check if dotnet is installed
-
-if ! command -v dotnet &> /dev/null
-then
-echo "Error: .NET SDK is not installed."
-echo "Please install .NET from:"
-echo "https://dotnet.microsoft.com/download"
-exit 1
-fi
+APP_NAME="safe"
+PROJECT_DIR="$(pwd)/CommandRiskAnalyser"
+PROJECT_FILE="$PROJECT_DIR/CommandRiskAnalyser.csproj"
+PUBLISH_DIR="$PROJECT_DIR/bin/Release/net8.0/linux-x64/publish"
+EXECUTABLE_NAME="CommandRiskAnalyser"
+TARGET_LINK="/usr/local/bin/$APP_NAME"
 
 echo "Checking .NET installation..."
 dotnet --version
 
+if [ ! -f "$PROJECT_FILE" ]; then
+    echo "Project file not found: $PROJECT_FILE"
+    exit 1
+fi
+
 echo ""
 echo "Building project..."
-
-dotnet publish -c Release -r linux-x64 --self-contained true
-
-if [ $? -ne 0 ]; then
-echo "Build failed."
-exit 1
-fi
+dotnet publish "$PROJECT_FILE" -c Release -r linux-x64 --self-contained false
 
 echo ""
-echo "Build successful."
-
-PUBLISH_DIR="bin/Release/net9.0/linux-x64/publish"
-
 if [ ! -d "$PUBLISH_DIR" ]; then
-echo "Publish directory not found."
-exit 1
+    echo "Publish directory not found: $PUBLISH_DIR"
+    exit 1
 fi
 
-cd $PUBLISH_DIR
-
-# Rename executable
-
-if [ -f "CommandRiskAnalyser" ]; then
-mv CommandRiskAnalyser safe
+if [ ! -f "$PUBLISH_DIR/$EXECUTABLE_NAME" ]; then
+    echo "Executable not found: $PUBLISH_DIR/$EXECUTABLE_NAME"
+    echo "Publish contents:"
+    ls -la "$PUBLISH_DIR"
+    exit 1
 fi
 
-# Make executable
-
-chmod +x safe
-
-echo ""
-echo "Installing safe command..."
-
-sudo mv safe /usr/local/bin/
-
-if [ $? -ne 0 ]; then
-echo "Installation failed."
-exit 1
-fi
+echo "Creating command shortcut..."
+sudo chmod +x "$PUBLISH_DIR/$EXECUTABLE_NAME"
+sudo ln -sf "$PUBLISH_DIR/$EXECUTABLE_NAME" "$TARGET_LINK"
 
 echo ""
-echo "-------------------------------------"
-echo "Installation complete!"
-echo ""
-echo "You can now run commands safely:"
-echo ""
-echo "  safe pwd"
-echo "  safe ls"
-echo "  safe echo hello"
-echo ""
-echo "Risky commands will be blocked."
-echo "-------------------------------------"
+echo "Installation successful."
+echo "You can now run:"
+echo "  safe"
+echo "or"
+echo "  safe \"ls -la\""
