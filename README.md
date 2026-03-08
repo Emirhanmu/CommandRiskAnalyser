@@ -13,3 +13,5 @@ chmod +x install.sh
 "safe" command to execute. 
 
 Example: safe, safe pwd, safe rm -rf, safe dd, safe mount
+
+<img width="801" height="310" alt="resim" src="https://github.com/user-attachments/assets/e9d58e42-5c45-4c1c-96aa-c78a19102a0d" />
