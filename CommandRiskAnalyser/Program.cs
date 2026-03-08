@@ -31,7 +31,6 @@ namespace CommandRiskAnalyser
                 Console.WriteLine("User Input: " + result.CommandInput + " \nMatched Command: " + result.Command + " \nRisk Level: " + result.RiskLevel + " \nDescription: " + result.Description + " \nDate and Time: " + result.Date);
             }
 
-            Console.ReadKey();
         }
     }
 }
